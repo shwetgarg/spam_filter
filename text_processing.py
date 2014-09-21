@@ -14,13 +14,13 @@ def get_words(data, stopwords = []):
 	data = re.sub('&\w+;', ' ', data)
 	
 	# Handle URLS (Look for strings starting with http:// or https://)
-	data = re.sub('(http|https)://[^\s]*', ' httpaddr ', data)
+	#data = re.sub('(http|https)://[^\s]*', ' httpaddr ', data)
 
-	# Handle Edata Addresses (Look for strings with @ in the middle)
-	data = re.sub('[^\s]+@[^\s]+', ' edataaddr ', data);
+	# Handle Email Addresses (Look for strings with @ in the middle)
+	#data = re.sub('[^\s]+@[^\s]+', ' emailaddr ', data);
 
 	# Handle $ sign
-	data = re.sub('[$]+', ' dollar ', data)	
+	#data = re.sub('[$]+', ' dollar ', data)	
 	
 	# Strip out weird '3D' artefacts.
 	data = re.sub('3D', ' ', data)

@@ -1,5 +1,4 @@
 import os
-import argparse
 from collections import defaultdict
 
 from nltk import NaiveBayesClassifier
@@ -63,6 +62,7 @@ def get_matrix(spam_set, ham_set, num_folds):
 				true_negative += 1
 			else:
 				false_positive += 1	
+
 		precision = true_positive / float(true_positive + false_positive)
 		recall = true_positive / float(true_positive + false_negative)
 		F1 += (2 * precision * recall) / (precision + recall)
@@ -72,20 +72,22 @@ def get_matrix(spam_set, ham_set, num_folds):
 		total_precision += precision
 		total_recall += recall
 		
-	return total_precision/num_folds, total_recall/num_folds, F1/num_folds, accuracy_of_spam*100/num_folds, accuracy_of_ham*100/num_folds
+	return total_precision/num_folds, total_recall/num_folds, F1/num_folds, spam_accuracy*100/num_folds, ham_accuracy*100/num_folds
 	
 def classify_data(classifier, test_mails, **kwargs):
 	'''
 	Classify the data and generates line correspoding to each mail
 	'''
 	for mail in test_mails:
-		features = get_features(mail, **kwargs)
+		mail_content = mail[0]
+		filename = mail[1]
+		features = get_features(mail_content, **kwargs)
 		label = classifier.classify(features)
 		if label == "spam":
 			label = 0
 		else:
 			label = 1
-		yield str(label) + " " + f + "\n"
+		yield str(label) + " " + filename + "\n"
         
 def main():    	
 	# Extract list of stopwords
@@ -104,7 +106,11 @@ def main():
 	# 5 Fold Cross Validation with training data to report result metrics
 	precision, recall, F1, ham_mails_accuracy, spam_mails_accuracy = \
 									get_matrix(spam_set, ham_set, conf.NUM_FOLDS)
-	print precision, recall, F1, ham_mails_accuracy, spam_mails_accuracy 
+	print "Precision : %.4f" % precision 
+	print "Recall : %.4f" % recall
+	print "F1 : %.4f" % F1
+	print "Spam Mails Accuracy : %.2f" % spam_mails_accuracy 
+	print "Ham Mails Accuracy : %.2f" % ham_mails_accuracy
 
 	# Model training on 100% train data
 	train_set = spam_set + ham_set
@@ -118,8 +124,8 @@ def main():
 	output_dir_path = os.path.abspath(os.path.join(conf.OUTPUT_DIR))	
 	if not os.path.exists(output_dir_path):
 		os.makedirs(output_path)
-	output_file_path = os.path.join(output_dir_path, conf.OUTPUT_DIR)
-	test_mails = get_dir_data_with_filename(test_data_path)
+	output_file_path = os.path.join(output_dir_path, conf.OUTPUT_FILE)
+	test_mails = utils.get_dir_data_with_filename(test_data_path)
 	utils.write_file(output_file_path, classify_data(classifier, test_mails, stopwords = sw))	
 				
 if __name__ == '__main__':
