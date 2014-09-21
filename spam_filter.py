@@ -39,10 +39,10 @@ def process_train_data(spam_mails, ham_mails, **kwargs):
     
 def get_matrix(spam_set, ham_set, num_folds):
 	'''
-	 Generate different matrix by taking the average of K Fold data
+	Generate different matrix by taking the average of K Fold data
 	'''
 	total_precision = total_recall = F1 = spam_accuracy = ham_accuracy = 0
-		
+
 	for train_set, test_spam_set, test_ham_set in utils.get_kfold_data(spam_set, ham_set, num_folds):
 		classifier = NaiveBayesClassifier.train(train_set)
 		spam_len = len(test_spam_set)
@@ -62,13 +62,11 @@ def get_matrix(spam_set, ham_set, num_folds):
 				true_negative += 1
 			else:
 				false_positive += 1	
-
 		precision = true_positive / float(true_positive + false_positive)
 		recall = true_positive / float(true_positive + false_negative)
 		F1 += (2 * precision * recall) / (precision + recall)
 		spam_accuracy += true_positive / float(true_positive + false_negative)
 		ham_accuracy += true_negative / float(true_negative + false_positive)
-		
 		total_precision += precision
 		total_recall += recall
 		
@@ -94,7 +92,7 @@ def main():
 	with open(conf.STOPWORDS_FILE, 'r') as f:
 		stopword_list = f.read()
 		sw = set([w.strip() for w in stopword_list.split()])
-		
+
 	# Process training data and prepare sets of (features, label) data
 	train_data_path = os.path.abspath(os.path.join(conf.TRAIN_DIR))
 	spam_path = os.path.join(train_data_path, 'spam')
@@ -102,10 +100,10 @@ def main():
 	spam_mails = utils.get_dir_data(spam_path)
 	ham_mails = utils.get_dir_data(ham_path)	
 	spam_set, ham_set = process_train_data(spam_mails, ham_mails, stopwords = sw)
-	
+
 	# 5 Fold Cross Validation with training data to report result metrics
 	precision, recall, F1, ham_mails_accuracy, spam_mails_accuracy = \
-									get_matrix(spam_set, ham_set, conf.NUM_FOLDS)
+								get_matrix(spam_set, ham_set, conf.NUM_FOLDS)
 	print "Precision : %.4f" % precision 
 	print "Recall : %.4f" % recall
 	print "F1 : %.4f" % F1
@@ -115,7 +113,7 @@ def main():
 	# Model training on 100% train data
 	train_set = spam_set + ham_set
 	classifier = NaiveBayesClassifier.train(train_set)
-	
+
 	# Top 20 informative features
 	print classifier.show_most_informative_features(20)
 
