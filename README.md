@@ -2,7 +2,7 @@ Spam Filter
 ===========
 Descrition:
 ------------
-	It is a spam filter to distinguish between spam and ham emails effectively
+It is a spam filter to distinguish between spam and ham emails effectively
 
 Distribution Structure:
 -----------------------
@@ -16,5 +16,5 @@ Usage:
 ------
 1. Define configuration related constants in conf.py
 2. Run the script as:
-    python spam_filter.py
+	python spam_filter.py
 	  
