@@ -88,11 +88,15 @@ def main():
 	with open(conf.STOPWORDS_FILE, 'r') as f:
 		stopword_list = f.read()
 		sw = set([w.strip() for w in stopword_list.split()])
+		
+	# Split data into ham and spam folders
+	train_data_path = os.path.abspath(os.path.join(conf.TRAIN_DIR))
+	train_file_path = os.path.abspath(os.path.join(conf.TRAIN_FILE))
+	utils.split_data(train_file_path, train_data_path)
 
 	# Process training data and prepare sets of (features, label) data
-	train_data_path = os.path.abspath(os.path.join(conf.TRAIN_DIR))
-	spam_path = os.path.join(train_data_path, 'spam')
-	ham_path = os.path.join(train_data_path, 'ham') 
+	spam_path = os.path.join(train_data_path, '0')     # label 0 for spam
+	ham_path = os.path.join(train_data_path, '1') 	  # label 1 for ham
 	spam_mails = utils.get_dir_data(spam_path)
 	ham_mails = utils.get_dir_data(ham_path)	
 	spam_set, ham_set = process_train_data(spam_mails, ham_mails, stopwords = sw)

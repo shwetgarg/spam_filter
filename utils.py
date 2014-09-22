@@ -1,5 +1,6 @@
 import os
 import random
+import shutil
 
 def get_kfold_data(spam_set, ham_set, num_folds):
     '''
@@ -47,4 +48,19 @@ def write_file(filename, iterator):
     with open(filename, 'wb') as f:
         for line in iterator:
             f.write(line)
+            
+def split_data(filepath, folderpath):
+	'''
+	Split Data in different folders depending on the label name present in filename
+	'''
+	with open(filepath, 'rb') as f:
+		for line in f:
+			line = line.split()
+			label = line[0]
+			filename = line[1]
+			output_folderpath = os.path.join(folderpath, label)
+			if not os.path.exists(output_folderpath):
+				os.makedirs(output_folderpath) 
+			shutil.copy2(os.path.join(folderpath, filename), output_folderpath)
+
 
