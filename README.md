@@ -17,5 +17,5 @@ Usage:
 1. Define configuration related constants in conf.py
 2. Run the script as:
 
-	python spam_filter.py
+    python spam_filter.py
 	  
