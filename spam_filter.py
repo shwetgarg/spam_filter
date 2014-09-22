@@ -8,15 +8,14 @@ import conf
 import utils
 import text_processing
 
-
 def get_features(mail, **kwargs):
 	'''
 	Returns a dictionary of {word: freq} for all words in mail
 	'''
-	features = defaultdict(int)
+	features = defaultdict(list)
 	mail_words = text_processing.get_words(mail, **kwargs)
 	for word in mail_words:
-		features[word] += 1 
+		features[word] = True 
 	return features
 
 def get_features_label(mails, label, **kwargs):
@@ -33,8 +32,8 @@ def process_train_data(spam_mails, ham_mails, **kwargs):
 	'''
 	Process the content of e-mails and divide it in given no of parts
 	'''
-	spam = get_features_label(spam_mails, 'spam', **kwargs)
-	ham = get_features_label(ham_mails, 'ham', **kwargs)
+	spam = get_features_label(spam_mails, 0, **kwargs)
+	ham = get_features_label(ham_mails, 1, **kwargs)
 	return spam, ham
 
 def get_matrix(spam_set, ham_set, num_folds):
@@ -51,17 +50,18 @@ def get_matrix(spam_set, ham_set, num_folds):
 		for test in test_spam_set:
 			features = test[0]
 			predicted_label = classifier.classify(features)
-			if predicted_label == "spam":
+			if predicted_label == 0:
 				true_positive += 1
 			else:
 				false_negative += 1
 		for test in test_ham_set:
 			features = test[0]
 			predicted_label = classifier.classify(features)
-			if predicted_label == "ham":
+			if predicted_label == 1:
 				true_negative += 1
 			else:
-				false_positive += 1	
+				false_positive += 1
+												
 		precision = true_positive / float(true_positive + false_positive)
 		recall = true_positive / float(true_positive + false_negative)
 		F1 += (2 * precision * recall) / (precision + recall)
@@ -81,10 +81,6 @@ def classify_data(classifier, test_mails, **kwargs):
 		filename = mail[1]
 		features = get_features(mail_content, **kwargs)
 		label = classifier.classify(features)
-		if label == "spam":
-			label = 0
-		else:
-			label = 1
 		yield str(label) + " " + filename + "\n"
 
 def main():    	
@@ -124,7 +120,7 @@ def main():
 		os.makedirs(output_path)
 	output_file_path = os.path.join(output_dir_path, conf.OUTPUT_FILE)
 	test_mails = utils.get_dir_data_with_filename(test_data_path)
-	utils.write_file(output_file_path, classify_data(classifier, test_mails, stopwords = sw))	
+	utils.write_file(output_file_path, classify_data(classifier, test_mails, stopwords = sw))
 
 if __name__ == '__main__':
 	main()

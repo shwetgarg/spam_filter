@@ -12,6 +12,3 @@ do
     	cp $filename "spam/$filename"
     fi   
 done
-
-
-

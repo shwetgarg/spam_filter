@@ -7,7 +7,7 @@ def get_words(data, stopwords = []):
 	preprocesses and tokenise any data and returns a list of words  
 	'''	
 	# Lower case
-	# data = str.lower(data);
+	#data = str.lower(data);
 	
 	# Strip all html tags and attributes and html character codes, like &nbsp; and &lt;
 	data = re.sub('<(.|\n)*?>', ' ', data)
@@ -20,7 +20,7 @@ def get_words(data, stopwords = []):
 	#data = re.sub('[^\s]+@[^\s]+', ' emailaddr ', data);
 
 	# Handle $ sign
-	#data = re.sub('[$]+', ' dollar ', data)	
+	data = re.sub('[$]+', ' dollar ', data)	
 	
 	# Strip out weird '3D' artefacts.
 	data = re.sub('3D', ' ', data)
@@ -35,7 +35,7 @@ def get_words(data, stopwords = []):
 	data_words = wordpunct_tokenize(data)
 
 	# Get rid of stopwords
-	data_words = [w for w in data_words if w not in stopwords]
+	#data_words = [w for w in data_words if w not in stopwords]
 		      
 	# Remove any non alphanumeric characters
 	data_words = map(lambda word:re.sub('[^a-zA-Z0-9]', '', word), data_words)
