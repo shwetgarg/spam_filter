@@ -10,33 +10,33 @@ import text_processing
 
 
 def get_features(mail, **kwargs):
-    '''
-    Returns a dictionary of {word: freq} for all words in mail
-    '''
-    features = defaultdict(int)
-    mail_words = text_processing.get_words(mail, **kwargs)
-    for word in mail_words:
-    		features[word] += 1 
-    return features
-    
+	'''
+	Returns a dictionary of {word: freq} for all words in mail
+	'''
+	features = defaultdict(int)
+	mail_words = text_processing.get_words(mail, **kwargs)
+	for word in mail_words:
+		features[word] += 1 
+	return features
+
 def get_features_label(mails, label, **kwargs):
-    '''
-    Extract features from all given mails with label (spam/ham)
-    '''
-    features_labels = []
-    for mail in mails:
-        features = get_features(mail, **kwargs)
-        features_labels.append((features, label))
-    return features_labels
-    
+	'''
+	Extract features from all given mails with label (spam/ham)
+	'''
+	features_labels = []
+	for mail in mails:
+		features = get_features(mail, **kwargs)
+		features_labels.append((features, label))
+	return features_labels
+
 def process_train_data(spam_mails, ham_mails, **kwargs):
-    '''
-    Process the content of e-mails and divide it in given no of parts
-    '''
-    spam = get_features_label(spam_mails, 'spam', **kwargs)
-    ham = get_features_label(ham_mails, 'ham', **kwargs)
-    return spam, ham
-    
+	'''
+	Process the content of e-mails and divide it in given no of parts
+	'''
+	spam = get_features_label(spam_mails, 'spam', **kwargs)
+	ham = get_features_label(ham_mails, 'ham', **kwargs)
+	return spam, ham
+
 def get_matrix(spam_set, ham_set, num_folds):
 	'''
 	Generate different matrix by taking the average of K Fold data
@@ -69,9 +69,9 @@ def get_matrix(spam_set, ham_set, num_folds):
 		ham_accuracy += true_negative / float(true_negative + false_positive)
 		total_precision += precision
 		total_recall += recall
-		
+
 	return total_precision/num_folds, total_recall/num_folds, F1/num_folds, spam_accuracy*100/num_folds, ham_accuracy*100/num_folds
-	
+
 def classify_data(classifier, test_mails, **kwargs):
 	'''
 	Classify the data and generates line correspoding to each mail
@@ -86,7 +86,7 @@ def classify_data(classifier, test_mails, **kwargs):
 		else:
 			label = 1
 		yield str(label) + " " + filename + "\n"
-        
+
 def main():    	
 	# Extract list of stopwords
 	with open(conf.STOPWORDS_FILE, 'r') as f:
@@ -103,7 +103,7 @@ def main():
 
 	# 5 Fold Cross Validation with training data to report result metrics
 	precision, recall, F1, ham_mails_accuracy, spam_mails_accuracy = \
-								get_matrix(spam_set, ham_set, conf.NUM_FOLDS)
+	get_matrix(spam_set, ham_set, conf.NUM_FOLDS)
 	print "Precision : %.4f" % precision 
 	print "Recall : %.4f" % recall
 	print "F1 : %.4f" % F1
@@ -125,8 +125,8 @@ def main():
 	output_file_path = os.path.join(output_dir_path, conf.OUTPUT_FILE)
 	test_mails = utils.get_dir_data_with_filename(test_data_path)
 	utils.write_file(output_file_path, classify_data(classifier, test_mails, stopwords = sw))	
-				
+
 if __name__ == '__main__':
 	main()
-				
-	
+
+
